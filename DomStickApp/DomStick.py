@@ -5,7 +5,9 @@ import serial
 import serial.tools.list_ports
 import threading
 from pynput.keyboard import Controller, Key
-theme_color = "#0078D7" # "#254C99"
+
+theme_color = "#0078D7"  # "#254C99"
+
 
 class DomstickApp:
     def __init__(self, root):
@@ -36,25 +38,36 @@ class DomstickApp:
         self.domstick_img = ImageTk.PhotoImage(img)
 
         img_label = tk.Label(self.root, image=self.domstick_img, bg="white")
-        img_label.pack(pady=40)
+        img_label.pack(pady=25)
 
         # -------------------- Port Selection + Connect --------------------
         port_frame = tk.Frame(self.root, bg="white")
-        port_frame.pack(pady=10)
+        port_frame.pack()
 
-        tk.Label(port_frame, text="Select COM Port:", bg="white", font=("Segoe UI", 10)).pack(side=tk.LEFT, padx=5)
+        # Top refresh button
+        refresh_button = tk.Button(port_frame, text="⟳", bg=theme_color, fg="white",
+                                   font=("Segoe UI", 10, "bold"), width=3, height=1,
+                                   command=self.refresh_ports, relief="flat", cursor="hand2")
+        refresh_button.pack(anchor="w", pady=(0, 3), padx=121)  # align to the right above combo box
 
-        self.port_menu = ttk.Combobox(port_frame, textvariable=self.selected_port, width=15, state="readonly")
+        # Bottom row (label, combobox, connect)
+        bottom_row = tk.Frame(port_frame, bg="white")
+        bottom_row.pack()
+
+        tk.Label(bottom_row, text="Select COM Port:", bg="white", font=("Segoe UI", 10)).pack(side=tk.LEFT, padx=5)
+
+        self.port_menu = ttk.Combobox(bottom_row, textvariable=self.selected_port, width=15, state="readonly")
         self.port_menu.pack(side=tk.LEFT, padx=5)
-        self.refresh_ports()
 
-        self.connect_button = tk.Button(port_frame, text="Connect", bg=theme_color, fg="white",
-                                   font=("Segoe UI", 9, "bold"), width=10, command=self.start_connection_thread)
+        self.connect_button = tk.Button(bottom_row, text="Connect", bg=theme_color, fg="white",
+                                        font=("Segoe UI", 9, "bold"), width=10,
+                                        command=self.start_connection_thread)
         self.connect_button.pack(side=tk.LEFT, padx=5)
 
         # -------------------- Status Message --------------------
-        self.status_label = tk.Label(self.root, text="", bg="white", fg="red", font=("Segoe UI", 9))
-        self.status_label.pack(side=tk.BOTTOM, pady=20)
+        self.status_label = tk.Label(self.root, text="", bg="white", fg="#0078D7", font=("Segoe UI", 12, "bold"))
+        self.status_label.pack(side=tk.BOTTOM, pady=25)
+        self.refresh_ports()
 
     # -------------------- Functions --------------------
     def refresh_ports(self):
@@ -62,15 +75,19 @@ class DomstickApp:
         self.port_menu["values"] = ports
         if ports:
             self.port_menu.current(0)
+            self.status_label.config(text="Choose a port to connect", fg="#0078D7")
+        else:
+            self.status_label.config(text="Is your Bluetooth open ?", fg="#FF6B6B")
+            self.port_menu.set("")  #clearing the combo box menu
 
     def start_connection_thread(self):
         """Start background connection thread."""
         port_name = self.selected_port.get()
         if not port_name:
-            self.status_label.config(text="Please select a COM port.", fg="red")
+            self.status_label.config(text="Please select a COM port.", fg="#FF6B6B")
             return
 
-        self.status_label.config(text=f"Connecting to {port_name}...", fg="blue")
+        self.status_label.config(text=f"Connecting to {port_name}...", fg="#0078D7")
         threading.Thread(target=self.connect_port, args=(port_name,), daemon=True).start()
 
     def connect_port(self, port_name):
@@ -84,7 +101,7 @@ class DomstickApp:
             self.start_listening_thread()
         except Exception as e:
             print(e)
-            self.status_label.config(text=f"Failed to connect to {port_name}", fg="red")
+            self.status_label.config(text=f"Failed to connect to {port_name}", fg="#FF6B6B")
             self.serial_connection = None
 
     def disconnect(self):
@@ -94,7 +111,7 @@ class DomstickApp:
             self.serial_connection.close()
         self.serial_connection = None
         self.connect_button.config(text="Connect", command=self.start_connection_thread)
-        self.status_label.config(text="Disconnected", fg="red")
+        self.status_label.config(text="Disconnected", fg="#FF6B6B")
 
     def start_listening_thread(self):
         """Start thread to listen for incoming serial data."""
@@ -130,7 +147,7 @@ class DomstickApp:
             print("Error in listener:", e)
         finally:
             if not self.stop_thread:
-                self.status_label.config(text="Connection lost.", fg="red")
+                self.status_label.config(text="Connection lost.", fg="#FF6B6B")
                 self.disconnect()
 
 
