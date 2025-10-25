@@ -62,34 +62,34 @@ class ConfigurationPage:
         # Top button
         self.joystick_up = tk.Button(joystick_buttons_frame, text="↑",
                                      font=("Consolas", 14, "bold"), width=3, height=1,
-                                     bg="#E3F2FD", fg=theme_color, relief="groove",
+                                     bg="#E3F2FD", fg=theme_color, relief="groove",cursor="hand2",
                                      activebackground="#BBDEFB", activeforeground=theme_color)
         self.joystick_up.grid(row=0, column=1, pady=4)
 
         # Middle row (Left, Center, Right)
         self.joystick_left = tk.Button(joystick_buttons_frame, text="←",
                                        font=("Consolas", 14, "bold"), width=3, height=1,
-                                       bg="#E3F2FD", fg=theme_color, relief="groove",
+                                       bg="#E3F2FD", fg=theme_color, relief="groove",cursor="hand2",
                                        activebackground="#BBDEFB", activeforeground=theme_color)
         self.joystick_left.grid(row=1, column=0, padx=4)
 
         # Center push button with accent color
         self.joystick_center = tk.Button(joystick_buttons_frame, text="PUSH",
                                          font=("Consolas", 10, "bold"), width=4, height=2,
-                                         bg=theme_color, fg="white", relief="groove",
+                                         bg=theme_color, fg="white", relief="groove",cursor="hand2",
                                          activebackground="#005A9E", activeforeground="white")
         self.joystick_center.grid(row=1, column=1, padx=2, pady=2)
 
         self.joystick_right = tk.Button(joystick_buttons_frame, text="→",
                                         font=("Consolas", 14, "bold"), width=3, height=1,
-                                        bg="#E3F2FD", fg=theme_color, relief="groove",
+                                        bg="#E3F2FD", fg=theme_color, relief="groove",cursor="hand2",
                                         activebackground="#BBDEFB", activeforeground=theme_color)
         self.joystick_right.grid(row=1, column=2, padx=4)
 
         # Bottom button
         self.joystick_down = tk.Button(joystick_buttons_frame, text="↓",
                                        font=("Consolas", 14, "bold"), width=3, height=1,
-                                       bg="#E3F2FD", fg=theme_color, relief="groove",
+                                       bg="#E3F2FD", fg=theme_color, relief="groove",cursor="hand2",
                                        activebackground="#BBDEFB", activeforeground=theme_color)
         self.joystick_down.grid(row=2, column=1, pady=4)
 
@@ -118,8 +118,9 @@ class ConfigurationPage:
             "bg": "#E3F2FD",
             "fg": "#0078D7",
             "relief": "groove",
-            "activebackground": "#E0E0E0",
-            "activeforeground": "#333333"
+            "activebackground": "#BBDEFB",
+            "activeforeground": theme_color,
+            "cursor" : "hand2"
         }
 
         self.push_top = tk.Button(buttons_container, text="TOP", **button_style)
@@ -194,14 +195,14 @@ class ConfigurationPage:
 
         # Back button (left side)
         close_button = tk.Button(button_container, text="← Back", bg="#6C757D", fg="white",
-                                 font=("Segoe UI", 9, "bold"), width=10, height=1,
+                                 font=("Segoe UI", 9, "bold"), width=10, height=1,cursor="hand2",
                                  command=self.close_configuration, relief="flat",
                                  activebackground="#5A6268", activeforeground="white")
         close_button.pack(side=tk.LEFT, padx=5)
 
         # Save button (right side) - with empty function for now
         save_button = tk.Button(button_container, text="Save Settings", bg=theme_color, fg="white",
-                                font=("Segoe UI", 9, "bold"), width=12, height=1,
+                                font=("Segoe UI", 9, "bold"), width=12, height=1,cursor="hand2",
                                 relief="flat", activebackground="#005A9E", activeforeground="white",
                                 command=self.save_settings)
         save_button.pack(side=tk.RIGHT, padx=5)
@@ -254,16 +255,20 @@ class DomstickApp:
         toolbar = tk.Frame(self.main_frame, bg=theme_color, height=50)
         toolbar.pack(fill=tk.X, side=tk.TOP)
 
-        # Configuration button (left side)
-        config_button = tk.Button(toolbar, text="⚙", bg=theme_color, fg="white",
-                                  font=("Segoe UI", 12, "bold"), width=3, height=1,
-                                  command=self.show_configuration, relief="flat", cursor="hand2")
-        config_button.pack(side=tk.LEFT, padx=10, pady=10)
+        # Left side - Configuration button with text
+        config_frame = tk.Frame(toolbar, bg=theme_color)
+        config_frame.pack(side=tk.LEFT, padx=2, pady=10)
 
-        # Title (center)
+        config_button = tk.Button(config_frame, text="⚙Settings", bg=theme_color, fg="white",
+                                  font=("consolas", 10), width=12, height=1,
+                                  command=self.show_configuration, relief="flat", cursor="hand2",
+                                  activebackground = "#BBDEFB", activeforeground = theme_color)
+        config_button.pack()
+
+        # Center - Title (properly centered)
         title_label = tk.Label(toolbar, text="DomStick", bg=theme_color,
                                fg="white", font=("Segoe UI", 14, "bold"))
-        title_label.pack(side=tk.LEFT, expand=True, pady=10)
+        title_label.place(relx=0.5, rely=0.5, anchor="center")
 
         # -------------------- Domstick Image --------------------
         img = Image.open("Resources\\DomStick.png")
@@ -278,9 +283,10 @@ class DomstickApp:
         port_frame.pack()
 
         # Top refresh button
-        refresh_button = tk.Button(port_frame, text="⟳", bg=theme_color, fg="white",
-                                   font=("Segoe UI", 10, "bold"), width=3, height=1,
-                                   command=self.refresh_ports, relief="flat", cursor="hand2")
+        refresh_button = tk.Button(port_frame, text="↺", bg=theme_color, fg="white",
+                                   font=("consolas", 10), width=3, height=1,
+                                   command=self.refresh_ports, relief="flat", cursor="hand2",
+                                   activebackground="#BBDEFB", activeforeground=theme_color)
         refresh_button.pack(anchor="w", pady=(0, 3), padx=121)  # align to the right above combo box
 
         # Bottom row (label, combobox, connect)
@@ -293,14 +299,15 @@ class DomstickApp:
         self.port_menu.pack(side=tk.LEFT, padx=5)
 
         self.connect_button = tk.Button(bottom_row, text="Connect", bg=theme_color, fg="white",
-                                        font=("Segoe UI", 9, "bold"), width=10,
-                                        command=self.start_connection_thread)
+                                        font=("Segoe UI", 9, "bold"), width=10,command=self.start_connection_thread,
+                                        activebackground="#BBDEFB", activeforeground=theme_color)
         self.connect_button.pack(side=tk.LEFT, padx=5)
 
         # -------------------- Status Message --------------------
         self.status_label = tk.Label(self.main_frame, text="", bg="white", fg="#0078D7", font=("Segoe UI", 12, "bold"))
         self.status_label.pack(side=tk.BOTTOM, pady=25)
         self.refresh_ports()
+
 
     def show_main_page(self):
         """Show the main application page"""
