@@ -77,3 +77,36 @@
 </tr>
 </tbody>
 </table>
+<p>&nbsp;</p>
+<h2 data-start="188" data-end="238">Turning DomStick into a Keyboard Controller</h2>
+<p data-start="240" data-end="450">To make <strong data-start="248" data-end="260">DomStick</strong> act like a <strong data-start="272" data-end="284">keyboard</strong> and control any PC game or application, we designed a system that translates the data sent via <strong data-start="380" data-end="393">Bluetooth</strong> into standard <strong data-start="408" data-end="440">HID (Human Interface Device)</strong> commands.</p>
+<p data-start="452" data-end="777">Since the <strong data-start="462" data-end="488">HC-05 Bluetooth module</strong> used on DomStick doesn&rsquo;t natively support HID mode, we created a <strong data-start="554" data-end="574">Python interface</strong> that bridges this gap. The Python script listens to the serial data coming from the DomStick through the selected <strong data-start="689" data-end="701">COM port</strong> and converts each received signal into a corresponding <strong data-start="757" data-end="776">keyboard action</strong>.</p>
+<p data-start="779" data-end="869">A simple <strong data-start="788" data-end="822">Graphical User Interface (GUI)</strong> is included to make the process user-friendly:</p>
+<ul data-start="870" data-end="1043">
+<li data-start="870" data-end="923">
+<p data-start="872" data-end="923">Scan and select available Bluetooth COM ports.</p>
+</li>
+<li data-start="924" data-end="967">
+<p data-start="926" data-end="967">Connect to your DomStick wirelessly.</p>
+</li>
+<li data-start="968" data-end="1043">
+<p data-start="970" data-end="1043">Automatically map incoming joystick or button data to keyboard keys.</p>
+</li>
+</ul>
+
+&nbsp;
+<p align="center">
+        <img
+          src="https://github.com/ahmedmamdouh32/DomStick/blob/master/Images/AppGUI.PNG?raw=true"
+          alt="DomStick App GUI"
+          width="400"
+          height="464"
+        />
+</p>
+
+
+
+
+
+<p data-start="779" data-end="869"></p>
+<p data-start="1045" data-end="1330">Once connected, every command from DomStick &mdash; joystick movements or button presses &mdash; is instantly translated into keyboard inputs on your computer, allowing you to <strong data-start="1209" data-end="1223">play games</strong>, <strong data-start="1225" data-end="1248">control simulations</strong>, or even <strong data-start="1258" data-end="1283">navigate applications</strong> as if DomStick were a real <strong data-start="1311" data-end="1329">HID controller</strong>.</p>
