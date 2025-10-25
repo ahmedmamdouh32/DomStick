@@ -9,6 +9,123 @@ from pynput.keyboard import Controller, Key
 theme_color = "#0078D7"  # "#254C99"
 
 
+class ConfigurationPage:
+    def __init__(self, parent, main_app):
+        self.parent = parent
+        self.main_app = main_app
+        self.frame = tk.Frame(self.parent, bg="white")
+
+        # Create configuration page content
+        self.create_widgets()
+
+    def create_widgets(self):
+        # Title
+        title_label = tk.Label(self.frame, text="Configuration Settings",
+                               bg="white", fg=theme_color,
+                               font=("Segoe UI", 16, "bold"))
+        title_label.pack(pady=20)
+
+        # Configuration content area
+        content_frame = tk.Frame(self.frame, bg="white")
+        content_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
+
+        # COM Port Settings section
+        tk.Label(content_frame, text="COM Port Settings:",
+                 bg="white", font=("Segoe UI", 12, "bold")).pack(anchor="w", pady=(0, 0))
+
+        # Main settings frame for 2x2 layout
+        settings_frame = tk.Frame(content_frame, bg="white")
+        settings_frame.pack(fill=tk.X, pady=10)
+
+        # Left side frame (Baud rate + Data bits)
+        left_frame = tk.Frame(settings_frame, bg="white")
+        left_frame.pack(side=tk.LEFT, fill=tk.X, expand=True)
+
+        # Right side frame (Stop bits + Parity)
+        right_frame = tk.Frame(settings_frame, bg="white")
+        right_frame.pack(side=tk.RIGHT, fill=tk.X, expand=True)
+
+        # -------------------- LEFT SIDE --------------------
+        # Baud rate selection (top left)
+        baud_frame = tk.Frame(left_frame, bg="white")
+        baud_frame.pack(fill=tk.X, pady=5)
+        tk.Label(baud_frame, text="Baud Rate:",
+                 bg="white", font=("Consolas", 10)).pack(side=tk.LEFT, padx=(0, 10))
+
+        self.baud_combo = ttk.Combobox(baud_frame,
+                                       values=["9600", "19200", "38400", "57600", "115200", "230400", "460800",
+                                               "921600"],
+                                       state="readonly", width=10)
+        self.baud_combo.set("9600")  # Default value
+        self.baud_combo.pack(side=tk.LEFT)
+
+        # Data bits selection (bottom left)
+        data_bits_frame = tk.Frame(left_frame, bg="white")
+        data_bits_frame.pack(fill=tk.X, pady=5)
+        tk.Label(data_bits_frame, text="Data Bits:",
+                 bg="white", font=("Consolas", 10)).pack(side=tk.LEFT, padx=(0, 10))
+
+        self.data_bits_combo = ttk.Combobox(data_bits_frame,
+                                            values=["5", "6", "7", "8"],
+                                            state="readonly", width=8)
+        self.data_bits_combo.set("8")  # Default value
+        self.data_bits_combo.pack(side=tk.LEFT)
+
+        # -------------------- RIGHT SIDE --------------------
+        # Stop bits selection (top right)
+        stop_bits_frame = tk.Frame(right_frame, bg="white")
+        stop_bits_frame.pack(fill=tk.X, pady=5)
+        tk.Label(stop_bits_frame, text="Stop Bits:",
+                 bg="white", font=("Consolas", 10)).pack(side=tk.LEFT, padx=(0, 10))
+
+        self.stop_bits_combo = ttk.Combobox(stop_bits_frame,
+                                            values=["1", "2"],
+                                            state="readonly", width=8)
+        self.stop_bits_combo.set("1")  # Default value
+        self.stop_bits_combo.pack(side=tk.LEFT)
+
+        # Parity selection (bottom right)
+        parity_frame = tk.Frame(right_frame, bg="white")
+        parity_frame.pack(fill=tk.X, pady=5)
+        tk.Label(parity_frame, text="Parity:",
+                 bg="white", font=("Consolas", 10)).pack(side=tk.LEFT, padx=(0, 10))
+
+        self.parity_combo = ttk.Combobox(parity_frame,
+                                         values=["None", "Even", "Odd"],
+                                         state="readonly", width=8)
+        self.parity_combo.set("None")  # Default value
+        self.parity_combo.pack(side=tk.LEFT)
+
+        # Add more space before buttons
+        tk.Frame(content_frame, bg="white", height=30).pack()
+
+        # Bottom buttons frame
+        buttons_frame = tk.Frame(self.frame, bg="white")
+        buttons_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=20, pady=20)
+
+        # Close button (left side)
+        close_button = tk.Button(buttons_frame, text="Back", bg="#6C757D", fg="white",
+                                 font=("Consolas", 10, "bold"), width=10,
+                                 command=self.close_configuration)
+        close_button.pack(side=tk.LEFT, padx=5)
+
+        # Save button (right side)
+        save_button = tk.Button(buttons_frame, text="Save", bg=theme_color, fg="white",
+                                font=("Consolas", 10, "bold"), width=10)
+        save_button.pack(side=tk.RIGHT, padx=5)
+    def close_configuration(self):
+        """Return to main page"""
+        self.main_app.show_main_page()
+
+    def show(self):
+        """Show the configuration page"""
+        self.frame.pack(fill=tk.BOTH, expand=True)
+
+    def hide(self):
+        """Hide the configuration page"""
+        self.frame.pack_forget()
+
+
 class DomstickApp:
     def __init__(self, root):
         self.root = root
@@ -24,24 +141,42 @@ class DomstickApp:
         self.stop_thread = False
         self.keyboard = Controller()
 
+        # Configuration page
+        self.config_page = ConfigurationPage(self.root, self)
+
+        # Create main page
+        self.main_frame = tk.Frame(self.root, bg="white")
+        self.create_main_page()
+
+        # Show main page initially
+        self.show_main_page()
+
+    def create_main_page(self):
         # -------------------- Toolbar --------------------
-        toolbar = tk.Frame(self.root, bg=theme_color, height=50)
+        toolbar = tk.Frame(self.main_frame, bg=theme_color, height=50)
         toolbar.pack(fill=tk.X, side=tk.TOP)
 
+        # Configuration button (left side)
+        config_button = tk.Button(toolbar, text="⚙", bg=theme_color, fg="white",
+                                  font=("Segoe UI", 12, "bold"), width=3, height=1,
+                                  command=self.show_configuration, relief="flat", cursor="hand2")
+        config_button.pack(side=tk.LEFT, padx=10, pady=10)
+
+        # Title (center)
         title_label = tk.Label(toolbar, text="DomStick", bg=theme_color,
                                fg="white", font=("Segoe UI", 14, "bold"))
-        title_label.pack(pady=10)
+        title_label.pack(side=tk.LEFT, expand=True, pady=10)
 
         # -------------------- Domstick Image --------------------
         img = Image.open("Resources\\DomStick.png")
         img.thumbnail((400, 400), Image.Resampling.LANCZOS)
         self.domstick_img = ImageTk.PhotoImage(img)
 
-        img_label = tk.Label(self.root, image=self.domstick_img, bg="white")
+        img_label = tk.Label(self.main_frame, image=self.domstick_img, bg="white")
         img_label.pack(pady=25)
 
         # -------------------- Port Selection + Connect --------------------
-        port_frame = tk.Frame(self.root, bg="white")
+        port_frame = tk.Frame(self.main_frame, bg="white")
         port_frame.pack()
 
         # Top refresh button
@@ -65,9 +200,19 @@ class DomstickApp:
         self.connect_button.pack(side=tk.LEFT, padx=5)
 
         # -------------------- Status Message --------------------
-        self.status_label = tk.Label(self.root, text="", bg="white", fg="#0078D7", font=("Segoe UI", 12, "bold"))
+        self.status_label = tk.Label(self.main_frame, text="", bg="white", fg="#0078D7", font=("Segoe UI", 12, "bold"))
         self.status_label.pack(side=tk.BOTTOM, pady=25)
         self.refresh_ports()
+
+    def show_main_page(self):
+        """Show the main application page"""
+        self.config_page.hide()
+        self.main_frame.pack(fill=tk.BOTH, expand=True)
+
+    def show_configuration(self):
+        """Show the configuration page"""
+        self.main_frame.pack_forget()
+        self.config_page.show()
 
     # -------------------- Functions --------------------
     def refresh_ports(self):
@@ -78,7 +223,7 @@ class DomstickApp:
             self.status_label.config(text="Choose a port to connect", fg="#0078D7")
         else:
             self.status_label.config(text="Is your Bluetooth open ?", fg="#FF6B6B")
-            self.port_menu.set("")  #clearing the combo box menu
+            self.port_menu.set("")  # clearing the combo box menu
 
     def start_connection_thread(self):
         """Start background connection thread."""
@@ -93,7 +238,7 @@ class DomstickApp:
     def connect_port(self, port_name):
         """Try connecting to the selected COM port in a background thread."""
         try:
-            #time.sleep(1)  # slight delay for visual effect
+            # time.sleep(1)  # slight delay for visual effect
             self.serial_connection = serial.Serial(port_name, 9600, timeout=1)
             self.status_label.config(text=f"Connected to {port_name}", fg="green")
             self.connect_button.config(text="Disconnect", command=self.disconnect)
