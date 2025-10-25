@@ -19,100 +19,198 @@ class ConfigurationPage:
         self.create_widgets()
 
     def create_widgets(self):
-        # Title
-        title_label = tk.Label(self.frame, text="Configuration Settings",
+        # Title with compact styling
+        title_frame = tk.Frame(self.frame, bg="white")
+        title_frame.pack(fill=tk.X, pady=(15, 5))
+
+        title_label = tk.Label(title_frame, text="Configuration Settings",
                                bg="white", fg=theme_color,
                                font=("Segoe UI", 16, "bold"))
-        title_label.pack(pady=20)
+        title_label.pack()
 
-        # Configuration content area
-        content_frame = tk.Frame(self.frame, bg="white")
-        content_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
+        # Subtitle
+        subtitle_label = tk.Label(title_frame, text="Customize your DomStick device settings",
+                                  bg="white", fg="#666666",
+                                  font=("Segoe UI", 9))
+        subtitle_label.pack(pady=(2, 0))
 
-        # COM Port Settings section
-        tk.Label(content_frame, text="COM Port Settings:",
-                 bg="white", font=("Segoe UI", 12, "bold")).pack(anchor="w", pady=(0, 0))
+        # Configuration content area - more compact
+        content_frame = tk.Frame(self.frame, bg="white", relief="flat", bd=0)
+        content_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=10)
 
-        # Main settings frame for 2x2 layout
-        settings_frame = tk.Frame(content_frame, bg="white")
-        settings_frame.pack(fill=tk.X, pady=10)
+        # Main container for both sections
+        main_container = tk.Frame(content_frame, bg="#F8F9FA", relief="flat", bd=1)
+        main_container.pack(fill=tk.BOTH, expand=True)
 
-        # Left side frame (Baud rate + Data bits)
-        left_frame = tk.Frame(settings_frame, bg="white")
-        left_frame.pack(side=tk.LEFT, fill=tk.X, expand=True)
+        # Left side - Joystick Section (more compact)
+        joystick_frame = tk.Frame(main_container, bg="white", relief="flat", bd=1,
+                                  highlightbackground="#E0E0E0", highlightthickness=1)
+        joystick_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(10, 5), pady=8)
 
-        # Right side frame (Stop bits + Parity)
-        right_frame = tk.Frame(settings_frame, bg="white")
-        right_frame.pack(side=tk.RIGHT, fill=tk.X, expand=True)
+        # Joystick header with accent color
+        joystick_header = tk.Frame(joystick_frame, bg=theme_color, height=25)
+        joystick_header.pack(fill=tk.X)
+        joystick_header.pack_propagate(False)
 
-        # -------------------- LEFT SIDE --------------------
-        # Baud rate selection (top left)
-        baud_frame = tk.Frame(left_frame, bg="white")
-        baud_frame.pack(fill=tk.X, pady=5)
-        tk.Label(baud_frame, text="Baud Rate:",
-                 bg="white", font=("Consolas", 10)).pack(side=tk.LEFT, padx=(0, 10))
+        tk.Label(joystick_header, text="Joystick Controls",
+                 bg=theme_color, fg="white", font=("Segoe UI", 10, "bold")).pack(pady=3)
 
-        self.baud_combo = ttk.Combobox(baud_frame,
-                                       values=["9600", "19200", "38400", "57600", "115200", "230400", "460800",
-                                               "921600"],
-                                       state="readonly", width=10)
-        self.baud_combo.set("9600")  # Default value
-        self.baud_combo.pack(side=tk.LEFT)
+        # Joystick buttons in a cross layout (more compact)
+        joystick_buttons_frame = tk.Frame(joystick_frame, bg="white")
+        joystick_buttons_frame.pack(expand=True, pady=12)
 
-        # Data bits selection (bottom left)
-        data_bits_frame = tk.Frame(left_frame, bg="white")
-        data_bits_frame.pack(fill=tk.X, pady=5)
-        tk.Label(data_bits_frame, text="Data Bits:",
-                 bg="white", font=("Consolas", 10)).pack(side=tk.LEFT, padx=(0, 10))
+        # Top button
+        self.joystick_up = tk.Button(joystick_buttons_frame, text="↑",
+                                     font=("Consolas", 14, "bold"), width=3, height=1,
+                                     bg="#E3F2FD", fg=theme_color, relief="groove",
+                                     activebackground="#BBDEFB", activeforeground=theme_color)
+        self.joystick_up.grid(row=0, column=1, pady=4)
 
-        self.data_bits_combo = ttk.Combobox(data_bits_frame,
-                                            values=["5", "6", "7", "8"],
-                                            state="readonly", width=8)
-        self.data_bits_combo.set("8")  # Default value
-        self.data_bits_combo.pack(side=tk.LEFT)
+        # Middle row (Left, Center, Right)
+        self.joystick_left = tk.Button(joystick_buttons_frame, text="←",
+                                       font=("Consolas", 14, "bold"), width=3, height=1,
+                                       bg="#E3F2FD", fg=theme_color, relief="groove",
+                                       activebackground="#BBDEFB", activeforeground=theme_color)
+        self.joystick_left.grid(row=1, column=0, padx=4)
 
-        # -------------------- RIGHT SIDE --------------------
-        # Stop bits selection (top right)
-        stop_bits_frame = tk.Frame(right_frame, bg="white")
-        stop_bits_frame.pack(fill=tk.X, pady=5)
-        tk.Label(stop_bits_frame, text="Stop Bits:",
-                 bg="white", font=("Consolas", 10)).pack(side=tk.LEFT, padx=(0, 10))
+        # Center push button with accent color
+        self.joystick_center = tk.Button(joystick_buttons_frame, text="PUSH",
+                                         font=("Consolas", 10, "bold"), width=4, height=2,
+                                         bg=theme_color, fg="white", relief="groove",
+                                         activebackground="#005A9E", activeforeground="white")
+        self.joystick_center.grid(row=1, column=1, padx=2, pady=2)
 
-        self.stop_bits_combo = ttk.Combobox(stop_bits_frame,
-                                            values=["1", "2"],
-                                            state="readonly", width=8)
-        self.stop_bits_combo.set("1")  # Default value
-        self.stop_bits_combo.pack(side=tk.LEFT)
+        self.joystick_right = tk.Button(joystick_buttons_frame, text="→",
+                                        font=("Consolas", 14, "bold"), width=3, height=1,
+                                        bg="#E3F2FD", fg=theme_color, relief="groove",
+                                        activebackground="#BBDEFB", activeforeground=theme_color)
+        self.joystick_right.grid(row=1, column=2, padx=4)
 
-        # Parity selection (bottom right)
-        parity_frame = tk.Frame(right_frame, bg="white")
-        parity_frame.pack(fill=tk.X, pady=5)
-        tk.Label(parity_frame, text="Parity:",
-                 bg="white", font=("Consolas", 10)).pack(side=tk.LEFT, padx=(0, 10))
+        # Bottom button
+        self.joystick_down = tk.Button(joystick_buttons_frame, text="↓",
+                                       font=("Consolas", 14, "bold"), width=3, height=1,
+                                       bg="#E3F2FD", fg=theme_color, relief="groove",
+                                       activebackground="#BBDEFB", activeforeground=theme_color)
+        self.joystick_down.grid(row=2, column=1, pady=4)
 
-        self.parity_combo = ttk.Combobox(parity_frame,
-                                         values=["None", "Even", "Odd"],
-                                         state="readonly", width=8)
-        self.parity_combo.set("None")  # Default value
-        self.parity_combo.pack(side=tk.LEFT)
+        # Right side - Push Buttons Section (more compact)
+        push_buttons_frame = tk.Frame(main_container, bg="white", relief="flat", bd=1,
+                                      highlightbackground="#E0E0E0", highlightthickness=1)
+        push_buttons_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=(5, 10), pady=8)
 
-        # Add more space before buttons
-        tk.Frame(content_frame, bg="white", height=30).pack()
+        # Push Buttons header with accent color
+        push_header = tk.Frame(push_buttons_frame, bg=theme_color, height=25)
+        push_header.pack(fill=tk.X)
+        push_header.pack_propagate(False)
 
-        # Bottom buttons frame
+        tk.Label(push_header, text="Action Buttons",
+                 bg=theme_color, fg="white", font=("Segoe UI", 10, "bold")).pack(pady=3)
+
+        # Push buttons container
+        buttons_container = tk.Frame(push_buttons_frame, bg="white")
+        buttons_container.pack(expand=True, pady=12)
+
+        # Push buttons stacked vertically with compact styling
+        button_style = {
+            "font": ("Consolas", 12, "bold"),
+            "width": 9,
+            "height": 1,
+            "bg": "#E3F2FD",
+            "fg": "#0078D7",
+            "relief": "groove",
+            "activebackground": "#E0E0E0",
+            "activeforeground": "#333333"
+        }
+
+        self.push_top = tk.Button(buttons_container, text="TOP", **button_style)
+        self.push_top.pack(pady=3)
+
+        self.push_bottom = tk.Button(buttons_container, text="BOTTOM", **button_style)
+        self.push_bottom.pack(pady=3)
+
+        self.push_right = tk.Button(buttons_container, text="RIGHT", **button_style)
+        self.push_right.pack(pady=3)
+
+        self.push_left = tk.Button(buttons_container, text="LEFT", **button_style)
+        self.push_left.pack(pady=3)
+
+        # Serial Settings Section (compact)
+        serial_frame = tk.Frame(content_frame, bg="white", relief="flat", bd=1,
+                                highlightbackground="#E0E0E0", highlightthickness=1)
+        serial_frame.pack(fill=tk.X, pady=(8, 0))
+
+        # Serial settings header
+        serial_header = tk.Frame(serial_frame, bg=theme_color, height=28)
+        serial_header.pack(fill=tk.X)
+        serial_header.pack_propagate(False)
+
+        tk.Label(serial_header, text="Serial Communication Settings",
+                 bg=theme_color, fg="white", font=("Segoe UI", 11, "bold")).pack(pady=5)
+
+        # Serial settings in 2x2 grid with compact spacing
+        serial_grid = tk.Frame(serial_frame, bg="white")
+        serial_grid.pack(pady=12, padx=20)
+
+        # Style for serial labels
+        label_style = {"bg": "white", "font": ("Segoe UI", 9), "fg": "#555555"}
+
+        # Row 1
+        tk.Label(serial_grid, text="Baud Rate:", **label_style).grid(row=0, column=0, padx=8, pady=4, sticky="w")
+        self.baud_combo = ttk.Combobox(serial_grid, values=["9600", "19200", "38400", "57600", "115200"],
+                                       state="readonly", width=8, font=("Segoe UI", 8))
+        self.baud_combo.set("9600")
+        self.baud_combo.grid(row=0, column=1, padx=8, pady=4)
+
+        tk.Label(serial_grid, text="Stop Bits:", **label_style).grid(row=0, column=2, padx=8, pady=4, sticky="w")
+        self.stop_bits_combo = ttk.Combobox(serial_grid, values=["1", "2"], state="readonly", width=8,
+                                            font=("Segoe UI", 8))
+        self.stop_bits_combo.set("1")
+        self.stop_bits_combo.grid(row=0, column=3, padx=8, pady=4)
+
+        # Row 2
+        tk.Label(serial_grid, text="Data Bits:", **label_style).grid(row=1, column=0, padx=8, pady=4, sticky="w")
+        self.data_bits_combo = ttk.Combobox(serial_grid, values=["5", "6", "7", "8"], state="readonly", width=8,
+                                            font=("Segoe UI", 8))
+        self.data_bits_combo.set("8")
+        self.data_bits_combo.grid(row=1, column=1, padx=8, pady=4)
+
+        tk.Label(serial_grid, text="Parity:", **label_style).grid(row=1, column=2, padx=8, pady=4, sticky="w")
+        self.parity_combo = ttk.Combobox(serial_grid, values=["None", "Even", "Odd"], state="readonly", width=8,
+                                         font=("Segoe UI", 8))
+        self.parity_combo.set("None")
+        self.parity_combo.grid(row=1, column=3, padx=8, pady=4)
+
+        # Bottom buttons frame - compact
         buttons_frame = tk.Frame(self.frame, bg="white")
-        buttons_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=20, pady=20)
+        buttons_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=20, pady=15)
 
-        # Close button (left side)
-        close_button = tk.Button(buttons_frame, text="Back", bg="#6C757D", fg="white",
-                                 font=("Consolas", 10, "bold"), width=10,
-                                 command=self.close_configuration)
+        # Add a separator line
+        separator = tk.Frame(buttons_frame, bg="#E0E0E0", height=1)
+        separator.pack(fill=tk.X, pady=(0, 10))
+
+        # Button container for side-by-side layout
+        button_container = tk.Frame(buttons_frame, bg="white")
+        button_container.pack(fill=tk.X)
+
+        # Back button (left side)
+        close_button = tk.Button(button_container, text="← Back", bg="#6C757D", fg="white",
+                                 font=("Segoe UI", 9, "bold"), width=10, height=1,
+                                 command=self.close_configuration, relief="flat",
+                                 activebackground="#5A6268", activeforeground="white")
         close_button.pack(side=tk.LEFT, padx=5)
 
-        # Save button (right side)
-        save_button = tk.Button(buttons_frame, text="Save", bg=theme_color, fg="white",
-                                font=("Consolas", 10, "bold"), width=10)
+        # Save button (right side) - with empty function for now
+        save_button = tk.Button(button_container, text="Save Settings", bg=theme_color, fg="white",
+                                font=("Segoe UI", 9, "bold"), width=12, height=1,
+                                relief="flat", activebackground="#005A9E", activeforeground="white",
+                                command=self.save_settings)
         save_button.pack(side=tk.RIGHT, padx=5)
+
+    def save_settings(self):
+        """Empty function for Save button - to be implemented later"""
+        print("Save button clicked - functionality to be implemented")
+        # This function doesn't do anything yet, as requested
+
     def close_configuration(self):
         """Return to main page"""
         self.main_app.show_main_page()
